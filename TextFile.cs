@@ -50,7 +50,7 @@ namespace AccessLog
         {            
             try
             {
-                using (StreamWriter writer = new(_filePath, true))
+                using (StreamWriter writer = new(_filePath, false))
                 { await writer.WriteLineAsync(message); }
             }
             catch (InvalidOperationException)
