@@ -31,6 +31,7 @@ namespace AccessLog
             catch (Exception e) { Notify?.Invoke(e.ToString()); }
         }
 
+        //Чтение из файла
         public string ReadingFromFile()
         {
             string data = "";
@@ -46,6 +47,7 @@ namespace AccessLog
             return data;
         }        
 
+        //Запись в файл
         public async void WriteingToFile(string message)
         {            
             try

@@ -15,8 +15,8 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AccessLog
 {    
-    class MyParser : IValidatableObject
-    {         
+    class MyParser
+    {       
         public DateOnly time_start;
         public DateOnly time_end;
         public string? address_start;
@@ -40,7 +40,7 @@ namespace AccessLog
         {            
             this.address_mask = address_mask;
             if (address_start!=null && address_mask!=null)
-                this.address_end = AddressEnd(address_start, address_mask);
+                this.address_end = AddressEnd(address_start, address_mask);            
         }
 
         private string AddressEnd(string address_start, string address_mask)
@@ -64,7 +64,6 @@ namespace AccessLog
             }
             return addressInt;
         }
-
 
         public Dictionary<string, int> Parser (string input)
         {
@@ -121,54 +120,5 @@ namespace AccessLog
             return string.Join("\n", dictionary.Select(kv => kv.Key + " - " + kv.Value).ToArray());
         }
 
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            List<ValidationResult> errors = new List<ValidationResult>();
-                        
-            if (time_start > time_end)
-                errors.Add(new ValidationResult("Нижняя граница временного интервала больше верхней"));
-
-            if (address_start!=null && !ValidateAddress(address_start))
-                errors.Add(new ValidationResult("Неправильно задана нижняя граница диапазона адресов"));
-
-            if (address_mask != null && !ValidateMask(address_mask))
-                errors.Add(new ValidationResult("Неправильно задана маска подсети"));
-
-            if (address_start==null && address_mask !=null)
-                errors.Add(new ValidationResult("Mаску подсети, задающую верхнюю границу диапазона, нельзя использовать, " +
-                    "если не задана нижняя граница диапазона адресов"));
-
-            return errors;
-        }
-                
-
-        private static bool ValidateMask(string mask)
-        {
-            int maskInt;
-            if (!int.TryParse(mask, out maskInt) || maskInt < 0 || maskInt > 32)
-                return false;
-
-            return true;
-        }
-
-        private static bool ValidateAddress(string address)
-        {
-            /*
-            Match match = Regex.Match(address, @"\b(\d{1,3}\.){3}\d{1,3}\b");
-            if (match.Success) return true;
-            else return false;
-            */
-
-            string[] ipParts = address.Split('.');
-            if (ipParts.Length != 4)
-                return false;
-            foreach (string partString in ipParts)
-            {
-                int partInt;
-                if (!int.TryParse(partString, out partInt) || partInt < 0 || partInt > 255)
-                    return false;
-            }
-            return true;
-        }
     }
 }
