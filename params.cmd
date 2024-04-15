@@ -1,7 +1,0 @@
- --name
- --file-log
- --file-output
- --time_start
- --time_end
- --address_start
- --address_mask
